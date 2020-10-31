@@ -26,9 +26,9 @@ Param
 
 Process
 {
-	[System.Collections.ArrayList] $files = Get-ChildItem -Path $SourceDirectoryPath -File -Force -Recurse -Depth $SourceDirectoryDepthToSearch
+	[System.Collections.ArrayList] $filesToMove = Get-ChildItem -Path $SourceDirectoryPath -File -Force -Recurse -Depth $SourceDirectoryDepthToSearch
 
-	$files | ForEach-Object {
+	$filesToMove | ForEach-Object {
 		[System.IO.FileInfo] $file = $_
 
 		[DateTime] $fileDate = $file.LastWriteTime

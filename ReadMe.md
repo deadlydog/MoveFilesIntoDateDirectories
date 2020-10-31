@@ -1,7 +1,7 @@
 # Move files into date directories
 
-[This PowerShell script](src/MoveFilesIntoDateDirectory.ps1) will scan all files in the `SourceDirectoryPath` and then move them into a directory whose name is based on the file's date.
-The target directory will be created if it doesn't already exist, and will be created within the 
+[This PowerShell script](src/MoveFilesIntoDateDirectories.ps1) will scan all files in the `SourceDirectoryPath` and then move them into directories whose name is based on the file's date.
+Target directories will be created if they doesn't already exist, using a name based upon the `TargetDirectoriesDateScope`, and they will be created within the `TargetDirectoryPath`.
 
 ## Changelog
 

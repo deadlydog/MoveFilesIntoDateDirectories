@@ -26,24 +26,25 @@ Param
 
 Process
 {
-	Get-ChildItem -Path $SourceDirectoryPath -File -Force -Recurse -Depth $SourceDirectoryDepthToSearch |
-		ForEach-Object {
-			[System.IO.FileInfo] $file = $_
+	[System.Collections.ArrayList] $files = Get-ChildItem -Path $SourceDirectoryPath -File -Force -Recurse -Depth $SourceDirectoryDepthToSearch
 
-			[DateTime] $fileDate = $file.LastWriteTime
-			[string] $dateDirectoryName = Get-FormattedDate -date $fileDate -dateScope $TargetDirectoriesDateScope
-			[string] $dateDirectoryPath = Join-Path -Path $TargetDirectoryPath -ChildPath $dateDirectoryName
+	$files | ForEach-Object {
+		[System.IO.FileInfo] $file = $_
 
-			if (!(Test-Path -Path $dateDirectoryPath -PathType Container))
-			{
-				Write-Verbose "Creating directory '$dateDirectoryPath'."
-				New-Item -Path $dateDirectoryPath -ItemType Directory -Force > $null
-			}
+		[DateTime] $fileDate = $file.LastWriteTime
+		[string] $dateDirectoryName = Get-FormattedDate -date $fileDate -dateScope $TargetDirectoriesDateScope
+		[string] $dateDirectoryPath = Join-Path -Path $TargetDirectoryPath -ChildPath $dateDirectoryName
 
-			[string] $filePath = $file.FullName
-			Write-Information "Moving file '$filePath' into directory '$dateDirectoryPath'."
-			Move-Item -Path $filePath -Destination $dateDirectoryPath -Force:$Force
+		if (!(Test-Path -Path $dateDirectoryPath -PathType Container))
+		{
+			Write-Verbose "Creating directory '$dateDirectoryPath'."
+			New-Item -Path $dateDirectoryPath -ItemType Directory -Force > $null
 		}
+
+		[string] $filePath = $file.FullName
+		Write-Information "Moving file '$filePath' into directory '$dateDirectoryPath'."
+		Move-Item -Path $filePath -Destination $dateDirectoryPath -Force:$Force
+	}
 }
 
 Begin

@@ -5,17 +5,23 @@
 Param
 (
 	[Parameter(Mandatory = $true, HelpMessage = 'The directory to look for files to move in.')]
+	[ValidateNotNullOrEmpty()]
 	[System.IO.DirectoryInfo] $SourceDirectoryPath = 'C:\dev\Git\MoveFilesIntoDateDirectories\FilesToSearch',
 
 	[Parameter(Mandatory = $false, HelpMessage = 'How many subdirectories deep the script should search for files to move. Default is no limit.')]
+	[ValidateRange(0, [int]::MaxValue)]
 	[int] $SourceDirectoryDepthToSearch = [int]::MaxValue,
 
 	[Parameter(Mandatory = $true, HelpMessage = 'The directory to create the date-named directories in and move the files to.')]
+	[ValidateNotNullOrEmpty()]
 	[System.IO.DirectoryInfo] $TargetDirectoryPath = 'C:\dev\Git\MoveFilesIntoDateDirectories\SortedFiles',
 
-	[Parameter(HelpMessage = 'The scope at which directories should be created. Accepted values include "Hour", "Day", "Month", or "Year". e.g. If you specify "Day" files will be moved from the `SourceDirectoryPath` to `TargetDirectoryPath\yyyy-MM-dd`.')]
+	[Parameter(Mandatory = $false, HelpMessage = 'The scope at which directories should be created. Accepted values include "Hour", "Day", "Month", or "Year". e.g. If you specify "Day" files will be moved from the `SourceDirectoryPath` to `TargetDirectoryPath\yyyy-MM-dd`.')]
 	[ValidateSet('Hour', 'Day', 'Month', 'Year')]
-	[string] $TargetDirectoryDateScope = 'Day'
+	[string] $TargetDirectoryDateScope = 'Day',
+
+	[Parameter(Mandatory = $false, HelpMessage = 'If provided, the script will overwrite existing files instead of reporting an error the the file already exists.')]
+	[switch] $Force
 )
 
 Process
@@ -36,7 +42,7 @@ Process
 
 			[string] $filePath = $file.FullName
 			Write-Information "Moving file '$filePath' into directory '$dateDirectoryPath'."
-			Move-Item -Path $filePath -Destination $dateDirectoryPath
+			Move-Item -Path $filePath -Destination $dateDirectoryPath -Force:$Force
 		}
 }
 

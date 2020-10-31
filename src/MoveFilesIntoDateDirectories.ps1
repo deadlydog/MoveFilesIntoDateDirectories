@@ -35,11 +35,7 @@ Process
 		[string] $dateDirectoryName = Get-FormattedDate -date $fileDate -dateScope $TargetDirectoriesDateScope
 		[string] $dateDirectoryPath = Join-Path -Path $TargetDirectoryPath -ChildPath $dateDirectoryName
 
-		if (!(Test-Path -Path $dateDirectoryPath -PathType Container))
-		{
-			Write-Verbose "Creating directory '$dateDirectoryPath'."
-			New-Item -Path $dateDirectoryPath -ItemType Directory -Force > $null
-		}
+		Ensure-DirectoryExists -directoryPath $dateDirectoryPath
 
 		[string] $filePath = $file.FullName
 		Write-Information "Moving file '$filePath' into directory '$dateDirectoryPath'."
@@ -64,6 +60,15 @@ Begin
 			Default { throw "The specified date scope '$dateScope' is not valid. Please provide a valid scope." }
 		}
 		return $formattedDate
+	}
+
+	function Ensure-DirectoryExists([string] $directoryPath)
+	{
+		if (!(Test-Path -Path $directoryPath -PathType Container))
+		{
+			Write-Verbose "Creating directory '$directoryPath'."
+			New-Item -Path $directoryPath -ItemType Directory -Force > $null
+		}
 	}
 
 	# Display the time that this script started running.

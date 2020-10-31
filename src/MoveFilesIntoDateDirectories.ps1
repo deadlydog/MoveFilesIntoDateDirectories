@@ -14,7 +14,7 @@ Param
 
 	[Parameter(Mandatory = $true, HelpMessage = 'The directory to create the date-named directories in and move the files to.')]
 	[ValidateNotNullOrEmpty()]
-	[System.IO.DirectoryInfo] $TargetDirectoryPath =,
+	[System.IO.DirectoryInfo] $TargetDirectoryPath,
 
 	[Parameter(Mandatory = $false, HelpMessage = 'The scope at which directories should be created. Accepted values include "Hour", "Day", "Month", or "Year". e.g. If you specify "Day" files will be moved from the `SourceDirectoryPath` to `TargetDirectoryPath\yyyy-MM-dd`.')]
 	[ValidateSet('Hour', 'Day', 'Month', 'Year')]

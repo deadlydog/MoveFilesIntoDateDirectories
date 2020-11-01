@@ -1,5 +1,5 @@
 # Changelog
 
-## v1.0.0 - October 31, 2020
+## v1.0.0 - November 1, 2020
 
 Initial script.

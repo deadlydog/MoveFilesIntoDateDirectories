@@ -6,7 +6,7 @@ It is acceptable for the `SourceDirectoryPath` and `TargetDirectoryPath` to be t
 
 A common use-case of this script is to move photos into date-named directories based on when the photo was taken.
 
-You can use the [Run.ps1](src/Run.ps1) script to easily provide parameters and run the cmdlet.
+You can use the [Invoke-MoveFilesIntoDateDirectories.ps1](src/Invoke-MoveFilesIntoDateDirectories.ps1) script to easily provide parameters and run the cmdlet.
 
 ## Example
 

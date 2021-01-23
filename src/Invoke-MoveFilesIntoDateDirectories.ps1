@@ -3,10 +3,10 @@
 
 # Specify the parameters to call the cmdlet with.
 [hashtable] $scriptParameters = @{
-	SourceDirectoryPath = 'C:\dev\Git\MoveFilesIntoDateDirectories\SourceDirectory'
-	# SourceDirectoryDepthToSearch = 2
-	TargetDirectoryPath = 'C:\dev\Git\MoveFilesIntoDateDirectories\TargetDirectory'
-	# TargetDirectoriesDateScope = 'Year'	# Hour, Day, Month, or Year
+	SourceDirectoryPath = 'C:\Dans\Imported Photos\NotByDateYet'
+	#SourceDirectoryDepthToSearch = 2
+	TargetDirectoryPath = 'C:\Dans\Imported Photos'
+	TargetDirectoriesDateScope = 'Day'	# Hour, Day, Month, or Year
 	Force = $false
 }
 

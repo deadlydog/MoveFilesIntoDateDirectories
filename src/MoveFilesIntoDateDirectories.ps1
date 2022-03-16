@@ -77,35 +77,77 @@ Begin
 	{
 		# Need to use special COM shell objects to search extended file properties.
 		$directoryPath = $file.DirectoryName
-		$directoryObject = $ShellObject.Namespace($directoryPath)
-		$fileObject = $directoryObject.ParseName($file.Name)
+		[__COMObject] $directoryObject = $ShellObject.Namespace($directoryPath)
+		[__COMObject] $fileObject = $directoryObject.ParseName($file.Name)
 
 		[DateTime] $fileDateToUse = $file.LastWriteTime	# Default value if no specified date properties are found.
 		foreach ($fileDateProperty in $fileDatePropertiesToUse)
 		{
-			[int] $datePropertyIndex = Get-FilePropertyIndex -directoryObject $directoryObject -fileProperty $fileDateProperty
-
-			[string] $dateString = $directoryObject.GetDetailsOf($fileObject, $datePropertyIndex)
-			[string] $sanitizedDateString = Get-SanitizedDateString -dateString $dateString
-
-			[DateTime] $fileDatePropertyDate = [DateTime]::MaxValue
-			[bool] $datePropertyWasFound = [DateTime]::TryParse($sanitizedDateString, [ref]$fileDatePropertyDate)
-			if ($datePropertyWasFound)
+			switch ($fileDateProperty)
 			{
-				$fileDateToUse = $fileDatePropertyDate
+				# First class file properties.
+				'CreationTime' { $fileDatePropertyValue = $file.CreationTime; break }
+				'LastWriteTime' { $fileDatePropertyValue = $file.LastWriteTime; break }
+
+				# Search through the extended optional file properties for the one specified.
+				Default
+				{
+					$fileDatePropertyValue = Get-FileDatePropertyValue `
+						-fileDateProperty $fileDateProperty `
+						-directoryObject $directoryObject `
+						-fileObject $fileObject
+				}
+			}
+
+			[bool] $fileDatePropertyValueWasRetrieved = ![string]::IsNullOrWhiteSpace($fileDatePropertyValue)
+			if ($fileDatePropertyValueWasRetrieved)
+			{
+				$fileDateToUse = $fileDatePropertyValue
 				Write-Verbose "Using property '$fileDateProperty' to determine file date for file '$($file.FullName)'."
 				break
 			}
 		}
+
+		# Free up memory before leaving.
+		$directoryObject = $null
+		$fileObject = $null
+
 		return $fileDateToUse
 	}
 
-	function Get-FilePropertyIndex($directoryObject, [string] $fileProperty)
+	function Get-FileDatePropertyValue([string] $fileDateProperty, [__COMObject] $directoryObject, [__COMObject] $fileObject)
+	{
+		[int] $datePropertyIndex = Get-FilePropertyIndex -fileProperty $fileDateProperty -directoryObject $directoryObject
+
+		if ($datePropertyIndex -lt 0)
+		{
+			return $null
+		}
+
+		[string] $dateString = $directoryObject.GetDetailsOf($fileObject, $datePropertyIndex)
+		[string] $sanitizedDateString = Get-SanitizedDateString -dateString $dateString
+
+		[DateTime] $fileDatePropertyDate = [DateTime]::MaxValue
+		if ([DateTime]::TryParse($sanitizedDateString, [ref]$fileDatePropertyDate))
+		{
+			return $fileDatePropertyDate
+		}
+		return $null
+	}
+
+	function Get-FilePropertyIndex([string] $fileProperty, [__COMObject] $directoryObject)
 	{
 		$propertyIndex = 0
 		do
 		{
 			$propertyName = $directoryObject.GetDetailsOf($directoryObject.Items, ++$propertyIndex)
+
+			# If we searched through all of the file properties and haven't found the one specified, return invalid index.
+			if ([string]::IsNullOrWhiteSpace($propertyName))
+			{
+				return -1
+			}
+
 		} while ($propertyName -ne $fileDateProperty)
 	}
 

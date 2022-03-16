@@ -34,7 +34,7 @@ Process
 	$filesToMove | ForEach-Object {
 		[System.IO.FileInfo] $file = $_
 
-		[DateTime] $fileDate = Get-FileDate -file $file -Property $FileDatePropertiesToUse
+		[DateTime] $fileDate = Get-FileDate -file $file -fileDatePropertiesToUse $FileDatePropertiesToUse
 		[string] $dateDirectoryName = Get-FormattedDate -date $fileDate -dateScope $TargetDirectoriesDateScope
 		[string] $dateDirectoryPath = Join-Path -Path $TargetDirectoryPath -ChildPath $dateDirectoryName
 

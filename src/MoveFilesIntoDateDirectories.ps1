@@ -73,6 +73,7 @@ Begin
 			New-Item -Path $directoryPath -ItemType Directory -Force > $null
 		}
 	}
+
 	function Get-FileDate([System.IO.FileInfo] $file, [string[]] $fileDatePropertiesToCheck)
 	{
 		# Need to use special COM shell objects to search extended file properties.

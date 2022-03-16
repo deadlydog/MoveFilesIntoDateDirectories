@@ -8,6 +8,7 @@ Import-Module -Name $moduleFilePath -Force
 	#SourceDirectoryDepthToSearch = 2	# Default is to search all subdirectories.
 	TargetDirectoryPath = 'C:\TargetDirectory\ToMoveFilesInto'
 	TargetDirectoriesDateScope = 'Day'	# Hour, Day, Month, or Year.
+	FileDatePropertiesToUse = @('DateTaken', 'CreateTime', 'LastWriteTime')
 	Force = $false
 }
 

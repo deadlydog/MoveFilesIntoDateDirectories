@@ -21,7 +21,7 @@ Param
 	[string] $TargetDirectoriesDateScope = 'Day',
 
 	[Parameter(Mandatory = $false, HelpMessage = "The property of the file that should be used to determine the file's date. Will prefer properties at the start of the array (i.e. index 0) and use sequential index properties if the property is not found. Default is DateTaken, CreationTime, LastWriteTime.")]
-	[string[]] $FileDatePropertiesToUse = @('Date taken', 'CreationTime', 'LastWriteTime'),
+	[string[]] $FileDatePropertiesToCheck = @('Date taken', 'CreationTime', 'LastWriteTime'),
 
 	[Parameter(Mandatory = $false, HelpMessage = 'If provided, the script will overwrite existing files instead of reporting an error the the file already exists.')]
 	[switch] $Force
@@ -34,7 +34,7 @@ Process
 	$filesToMove | ForEach-Object {
 		[System.IO.FileInfo] $file = $_
 
-		[DateTime] $fileDate = Get-FileDate -file $file -fileDatePropertiesToUse $FileDatePropertiesToUse
+		[DateTime] $fileDate = Get-FileDate -file $file -fileDatePropertiesToCheck $FileDatePropertiesToCheck
 		[string] $dateDirectoryName = Get-FormattedDate -date $fileDate -dateScope $TargetDirectoriesDateScope
 		[string] $dateDirectoryPath = Join-Path -Path $TargetDirectoryPath -ChildPath $dateDirectoryName
 
@@ -73,7 +73,7 @@ Begin
 			New-Item -Path $directoryPath -ItemType Directory -Force > $null
 		}
 	}
-	function Get-FileDate([System.IO.FileInfo] $file, [string[]] $fileDatePropertiesToUse)
+	function Get-FileDate([System.IO.FileInfo] $file, [string[]] $fileDatePropertiesToCheck)
 	{
 		# Need to use special COM shell objects to search extended file properties.
 		$directoryPath = $file.DirectoryName
@@ -81,7 +81,7 @@ Begin
 		[__COMObject] $fileObject = $directoryObject.ParseName($file.Name)
 
 		[DateTime] $fileDateToUse = $file.LastWriteTime	# Default value if no specified date properties are found.
-		foreach ($fileDateProperty in $fileDatePropertiesToUse)
+		foreach ($fileDateProperty in $fileDatePropertiesToCheck)
 		{
 			switch ($fileDateProperty)
 			{

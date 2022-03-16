@@ -21,7 +21,7 @@ Param
 	[string] $TargetDirectoriesDateScope = 'Day',
 
 	[Parameter(Mandatory = $false, HelpMessage = "The property of the file that should be used to determine the file's date. Will prefer properties at the start of the array (i.e. index 0) and use sequential index properties if the property is not found. Default is DateTaken, CreationTime, LastWriteTime.")]
-	[string[]] $FileDatePropertiesToUse = @('Date taken', 'Media created', 'CreationTime', 'LastWriteTime'),
+	[string[]] $FileDatePropertiesToUse = @('Date taken', 'CreationTime', 'LastWriteTime'),
 
 	[Parameter(Mandatory = $false, HelpMessage = 'If provided, the script will overwrite existing files instead of reporting an error the the file already exists.')]
 	[switch] $Force
@@ -149,6 +149,8 @@ Begin
 			}
 
 		} while ($propertyName -ne $fileDateProperty)
+
+		return $propertyIndex
 	}
 
 	function Get-SanitizedDateString([string] $dateString)

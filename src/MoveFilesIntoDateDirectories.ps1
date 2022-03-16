@@ -21,7 +21,7 @@ Param
 	[string] $TargetDirectoriesDateScope = 'Day',
 
 	[Parameter(Mandatory = $false, HelpMessage = "The property of the file that should be used to determine the file's date. Will prefer properties at the start of the array (i.e. index 0) and use sequential index properties if the property is not found. Default is DateTaken, CreationTime, LastWriteTime.")]
-	[string[]] $FileDatePropertiesToUse = @('DateTaken', 'CreationTime', 'LastWriteTime'),
+	[string[]] $FileDatePropertiesToUse = @('Date taken', 'Media created', 'CreationTime', 'LastWriteTime'),
 
 	[Parameter(Mandatory = $false, HelpMessage = 'If provided, the script will overwrite existing files instead of reporting an error the the file already exists.')]
 	[switch] $Force
@@ -75,19 +75,49 @@ Begin
 	}
 	function Get-FileDate([System.IO.FileInfo] $file, [string[]] $fileDatePropertiesToUse)
 	{
-		[DateTime] $fileDateToUse = $file.LastWriteTime
-		$fileDatePropertiesToUse | ForEach-Object {
-			[string] $fileDateProperty = $_
-			[DateTime] $fileDataPropertyDate = $file.GetPropertyValue($fileDateProperty)
-			if ($null -ne $fileDataPropertyDate)
+		# Need to use special COM shell objects to search extended file properties.
+		$directoryPath = $file.DirectoryName
+		$directoryObject = $ShellObject.Namespace($directoryPath)
+		$fileObject = $directoryObject.ParseName($file.Name)
+
+		[DateTime] $fileDateToUse = $file.LastWriteTime	# Default value if no specified date properties are found.
+		foreach ($fileDateProperty in $fileDatePropertiesToUse)
+		{
+			[int] $datePropertyIndex = Get-FilePropertyIndex -directoryObject $directoryObject -fileProperty $fileDateProperty
+
+			[string] $dateString = $directoryObject.GetDetailsOf($fileObject, $datePropertyIndex)
+			[string] $sanitizedDateString = Get-SanitizedDateString -dateString $dateString
+
+			[DateTime] $fileDatePropertyDate = [DateTime]::MaxValue
+			[bool] $datePropertyWasFound = [DateTime]::TryParse($sanitizedDateString, [ref]$fileDatePropertyDate)
+			if ($datePropertyWasFound)
 			{
-				$fileDateToUse = $fileDataPropertyDate
+				$fileDateToUse = $fileDatePropertyDate
 				Write-Verbose "Using property '$fileDateProperty' to determine file date for file '$($file.FullName)'."
-				return
+				break
 			}
 		}
 		return $fileDateToUse
 	}
+
+	function Get-FilePropertyIndex($directoryObject, [string] $fileProperty)
+	{
+		$propertyIndex = 0
+		do
+		{
+			$propertyName = $directoryObject.GetDetailsOf($directoryObject.Items, ++$propertyIndex)
+		} while ($propertyName -ne $fileDateProperty)
+	}
+
+	function Get-SanitizedDateString([string] $dateString)
+	{
+		# Property values sometimes have unicode characters in them, so string out all characters
+		# except for letters, numbers, spaces, colons, slashes, and backslashes.
+		[string] $sanitizedDateString = $dateString -replace '[^a-zA-Z0-9\s:/\\]', ''
+		return $sanitizedDateString
+	}
+
+	$ShellObject = New-Object -ComObject Shell.Application
 
 	# Display the time that this script started running.
 	[datetime] $startTime = Get-Date

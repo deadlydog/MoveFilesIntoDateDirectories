@@ -1,5 +1,5 @@
 #Requires -Version 5.0
-# This script will inspect files from the provided source directory, and move them into a directory based on their LastWriteTime.
+# This script will inspect files from the provided source directory, and move them into a directory whose name based on the specified file date property (e.g. LastWriteTime).
 
 [CmdletBinding()]
 Param

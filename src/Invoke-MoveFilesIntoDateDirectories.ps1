@@ -9,6 +9,7 @@ Import-Module -Name $moduleFilePath -Force
 	TargetDirectoryPath = 'C:\TargetDirectory\ToMoveFilesInto'
 	TargetDirectoriesDateScope = 'Day'	# Hour, Day, Month, or Year.
 	FileDatePropertiesToCheck = @('Date taken', 'CreationTime', 'LastWriteTime')
+	FileDateStrategy = 'Oldest'	# Oldest, Newest, or Priority
 	Force = $false
 }
 

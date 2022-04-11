@@ -204,7 +204,7 @@ Begin
 
 	function Get-SanitizedDateString([string] $dateString)
 	{
-		# Property values sometimes have unicode characters in them, so string out all characters
+		# Property values sometimes have unicode characters in them, so strip out all characters
 		# except for letters, numbers, spaces, colons, slashes, and backslashes.
 		[string] $sanitizedDateString = $dateString -replace '[^a-zA-Z0-9\s:/\\]', ''
 		return $sanitizedDateString

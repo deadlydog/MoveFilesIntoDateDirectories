@@ -28,7 +28,7 @@ Param
 	[ValidateNotNullOrEmpty()]
 	[string] $FileDateStrategy = 'Oldest',
 
-	[Parameter(Mandatory = $false, HelpMessage = 'If provided, the script will overwrite existing files instead of reporting an error the the file already exists.')]
+	[Parameter(Mandatory = $false, HelpMessage = 'If provided, the script will overwrite existing files instead of reporting an error that the file already exists.')]
 	[switch] $Force
 )
 

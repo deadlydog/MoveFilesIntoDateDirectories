@@ -20,8 +20,8 @@ Param
 	[ValidateSet('Hour', 'Day', 'Month', 'Year')]
 	[string] $TargetDirectoriesDateScope = 'Day',
 
-	[Parameter(Mandatory = $false, HelpMessage = "The properties of the file that should be used to determine the file's date. If a property does not exist on the file, it will be ignored. Default value is @('Date taken', 'LastWriteTime', 'CreationTime').")]
-	[string[]] $FileDatePropertiesToCheck = @('Date taken', 'LastWriteTime', 'CreationTime'),
+	[Parameter(Mandatory = $false, HelpMessage = "The properties of the file that should be used to determine the file's date. If a property does not exist on the file, it will be ignored. Default value is @('Date taken', 'Media created', 'LastWriteTime', 'CreationTime').")]
+	[string[]] $FileDatePropertiesToCheck = @('Date taken', 'Media created', 'LastWriteTime', 'CreationTime'),
 
 	[Parameter(Mandatory = $false, HelpMessage = "When there are multiple FileDataPropertiesToCheck, this strategy determines which date should be used. Valid values are 'Oldest', 'Newest', and 'Priority'. Default value is 'Oldest', which will use the earliest date value. 'Newest' will use the latest date value. 'Priority' will use the first date value from the FileDatePropertiesToCheck array that is found in the file's properties. For example, if FileDatePropertiesToCheck = @('Date taken', 'LastWriteTime', 'CreationTime'), then 'Date taken' will be used, unless it does not exist, in which case LastWriteTime will be used.")]
 	[ValidateSet('Oldest', 'Newest', 'Priority')]

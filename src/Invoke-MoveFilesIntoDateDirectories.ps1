@@ -6,7 +6,7 @@
 	SourceDirectoryPath = 'C:\SourceDirectory\WithFilesToMove'
 	#SourceDirectoryDepthToSearch = 2	# Default is to search all subdirectories.
 	TargetDirectoryPath = 'C:\TargetDirectory\ToMoveFilesInto'
-	TargetDirectoriesDateScope = 'Day'	# Hour, Day, Month, or Year
+	TargetDirectoriesDateScope = 'Day'	# Hour, Day, Month, or Year.
 	Force = $false
 }
 

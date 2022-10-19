@@ -39,7 +39,7 @@ Process
 
 		[string] $filePath = $file.FullName
 		Write-Information "Moving file '$filePath' into directory '$dateDirectoryPath'."
-		Move-Item -Path $filePath -Destination $dateDirectoryPath -Force:$Force
+		Move-Item -LiteralPath $filePath -Destination $dateDirectoryPath -Force:$Force
 	}
 }
 

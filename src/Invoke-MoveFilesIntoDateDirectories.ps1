@@ -3,10 +3,10 @@
 
 # Specify the parameters to call the cmdlet with.
 [hashtable] $scriptParameters = @{
-	SourceDirectoryPath = 'C:\Dans\Imported Photos\NotByDateYet'
-	#SourceDirectoryDepthToSearch = 2
-	TargetDirectoryPath = 'C:\Dans\Imported Photos'
-	TargetDirectoriesDateScope = 'Day'	# Hour, Day, Month, or Year
+	SourceDirectoryPath = 'C:\SourceDirectory\WithFilesToMove'
+	#SourceDirectoryDepthToSearch = 2	# Default is to search all subdirectories.
+	TargetDirectoryPath = 'C:\TargetDirectory\ToMoveFilesInto'
+	TargetDirectoriesDateScope = 'Day'	# Hour, Day, Month, or Year.
 	Force = $false
 }
 

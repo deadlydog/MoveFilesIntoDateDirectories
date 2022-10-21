@@ -1,8 +1,9 @@
 [string] $thisScriptsDirectory = $PSScriptRoot
-[string] $scriptFilePath = Join-Path -Path $thisScriptsDirectory -ChildPath 'MoveFilesIntoDateDirectories.ps1'
+[string] $moduleFilePath = Join-Path -Path $thisScriptsDirectory -ChildPath 'MoveFilesIntoDateDirectories.psm1'
+Import-Module -Name $moduleFilePath
 
 # Specify the parameters to call the cmdlet with.
-[hashtable] $scriptParameters = @{
+[hashtable] $parameters = @{
 	SourceDirectoryPath = 'C:\SourceDirectory\WithFilesToMove'
 	#SourceDirectoryDepthToSearch = 2	# Default is to search all subdirectories.
 	TargetDirectoryPath = 'C:\TargetDirectory\ToMoveFilesInto'
@@ -11,4 +12,4 @@
 }
 
 # Run the cmdlet using the specified parameters.
-& $scriptFilePath @scriptParameters
+Move-FilesIntoDateDirectories @parameters

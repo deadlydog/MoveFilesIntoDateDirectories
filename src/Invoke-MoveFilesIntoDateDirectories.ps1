@@ -1,6 +1,6 @@
 [string] $thisScriptsDirectory = $PSScriptRoot
 [string] $moduleFilePath = Join-Path -Path $thisScriptsDirectory -ChildPath 'MoveFilesIntoDateDirectories.psm1'
-Import-Module -Name $moduleFilePath
+Import-Module -Name $moduleFilePath -Force
 
 # Specify the parameters to call the cmdlet with.
 [hashtable] $parameters = @{

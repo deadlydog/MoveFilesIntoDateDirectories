@@ -12,4 +12,4 @@ Import-Module -Name $moduleFilePath -Force
 }
 
 # Run the cmdlet using the specified parameters.
-Move-FilesIntoDateDirectories @parameters
+Move-FilesIntoDateDirectories @parameters -Verbose -InformationAction Continue

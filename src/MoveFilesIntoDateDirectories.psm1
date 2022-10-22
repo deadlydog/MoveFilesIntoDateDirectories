@@ -29,7 +29,7 @@ function Move-FilesIntoDateDirectories
 	{
 		[System.Collections.ArrayList] $filesToMove = Get-ChildItem -Path $SourceDirectoryPath -File -Force -Recurse -Depth $SourceDirectoryDepthToSearch
 
-		$filesToMove | ForEach-Object {
+		$filesToMove | Where-Object { $null -ne $_ } | ForEach-Object {
 			[System.IO.FileInfo] $file = $_
 
 			[DateTime] $fileDate = $file.LastWriteTime

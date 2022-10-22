@@ -183,4 +183,47 @@ Describe 'Move Files' {
 			$actualFilePaths | Should -Be $expectedFilePaths
 		}
 	}
+
+	Context 'When a maximum source directory depth search is specified' {
+		It 'Should only move files from the source directory up to the maximum depth' {
+			# Arrange.
+			[int] $maxDirectoryDepth = 1
+			[string] $targetDirectoriesDateScope = 'Year'
+
+			# Act.
+			Move-FilesIntoDateDirectories `
+				-SourceDirectoryPath $SourceDirectoryPath `
+				-TargetDirectoryPath $TargetDirectoryPath `
+				-TargetDirectoriesDateScope $targetDirectoriesDateScope `
+				-SourceDirectoryDepthToSearch $maxDirectoryDepth `
+				-Force
+
+			# Assert.
+			[string[]] $expectedFilePaths = @()
+			$TestFilesToCreate |
+				Where-Object {
+					[string] $relativeDirectoryPath = $_.SourceFilePath.Replace($SourceDirectoryPath, '').TrimStart('\')
+					[string[]] $directories = $relativeDirectoryPath.Split('\')
+					[int] $numberOfChildDirectories = $directories.Length - 1
+
+					return $numberOfChildDirectories -le $maxDirectoryDepth
+				} |
+				ForEach-Object {
+					[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
+					[DateTime] $lastWriteTime = [DateTime]::Parse($_.LastWriteTime)
+					[string] $expectedDirectoryName =
+					GetFormattedDate -date $lastWriteTime -dateScope $targetDirectoriesDateScope
+					[string] $expectedFilePath =
+					Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
+
+					$expectedFilePaths += $expectedFilePath
+				}
+
+			[string[]] $actualFilePaths =
+			Get-ChildItem -Path $TargetDirectoryPath -Recurse -File |
+				Select-Object -ExpandProperty FullName
+
+			$actualFilePaths | Should -Be $expectedFilePaths
+		}
+	}
 }

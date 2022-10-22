@@ -27,6 +27,13 @@ function Move-FilesIntoDateDirectories
 
 	Process
 	{
+		[bool] $sourceDirectoryExists = Test-Path -Path $SourceDirectoryPath -PathType Container
+		if (-not $sourceDirectoryExists)
+		{
+			Write-Warning -Message "The source directory path '$SourceDirectoryPath' does not exist, so there are no files to move."
+			return
+		}
+
 		[System.Collections.ArrayList] $filesToMove = Get-ChildItem -Path $SourceDirectoryPath -File -Force -Recurse -Depth $SourceDirectoryDepthToSearch
 
 		$filesToMove | Where-Object { $null -ne $_ } | ForEach-Object {

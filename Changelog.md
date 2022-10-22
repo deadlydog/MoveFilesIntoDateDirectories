@@ -1,5 +1,16 @@
 # Changelog
 
+## vNext
+
+Features:
+
+- Converted script into a module.
+- Write warning if the source directory does not exist.
+
+Fixes:
+
+- Do not try to process null files, which would result in an error.
+
 ## v1.1.0 - October 19, 2022
 
 Features:

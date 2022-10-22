@@ -23,29 +23,21 @@ Describe 'Move Files' {
 		[string] $SourceDirectoryPath = Join-Path -Path $TestDrive -ChildPath 'SourceFiles'
 		[string] $TargetDirectoryPath = Join-Path -Path $TestDrive -ChildPath 'SortedFiles'
 
-		[string] $TestFileCreationTimeMonth = '01'
-		[string] $TestFileCreationTimeDay = '01'
-		[string] $TestFileCreationTimeHour = '01'
-
-		[string] $TestFileLastWriteTimeMonth = '12'
-		[string] $TestFileLastWriteTimeDay = '31'
-		[string] $TestFileLastWriteTimeHour = '23'
-
 		[hashtable[]] $TestFilesToCreate = @(
 			@{
 				SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath '2020.txt'
-				CreationTime = "2020-$TestFileCreationTimeMonth-$TestFileCreationTimeDay $($TestFileCreationTimeHour):00:00"
-				LastWriteTime = "2020-$TestFileLastWriteTimeMonth-$TestFileLastWriteTimeDay $($TestFileLastWriteTimeHour):00:00"
+				CreationTime = '2020-01-01 01:00:00'
+				LastWriteTime = '2020-12-31 23:00:00'
 			}
 			@{
 				SourceFilePath = Join-Path -Path $sourceDirectoryPath -ChildPath 'ChildDirectory\2021.csv'
-				CreationTime = "2021-$TestFileCreationTimeMonth-$TestFileCreationTimeDay $($TestFileCreationTimeHour):00:00"
-				LastWriteTime = "2021-$TestFileLastWriteTimeMonth-$TestFileLastWriteTimeDay $($TestFileLastWriteTimeHour):00:00"
+				CreationTime = '2021-01-01 01:00:00'
+				LastWriteTime = '2021-12-31 23:00:00'
 			}
 			@{
 				SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath 'Multiple\Nested\Directories\2022.log'
-				CreationTime = "2022-$TestFileCreationTimeMonth-$TestFileCreationTimeDay $($TestFileCreationTimeHour):00:00"
-				LastWriteTime = "2022-$TestFileLastWriteTimeMonth-$TestFileLastWriteTimeDay $($TestFileLastWriteTimeHour):00:00"
+				CreationTime = '2022-01-01 01:00:00'
+				LastWriteTime = '2022-12-31 23:00:00'
 			}
 		)
 
@@ -56,7 +48,7 @@ Describe 'Move Files' {
 			Set-ItemProperty -Path $_.SourceFilePath -Name LastWriteTime -Value $_.LastWriteTime
 		}
 
-		# Ensure files from other test runs are not present.
+		# Ensure files moved from other test runs are not present.
 		Remove-Item -Path $TargetDirectoryPath -Force -Recurse -ErrorAction SilentlyContinue
 	}
 

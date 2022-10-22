@@ -1,6 +1,21 @@
 BeforeAll {
 	[string] $sutModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'MoveFilesIntoDateDirectories.psm1'
 	Import-Module -Name $sutModulePath -Force
+
+	# This function is copy-pasted from the module, since it is a private method that we cannot call directly.
+	function GetFormattedDate([DateTime] $date, [string] $dateScope)
+	{
+		[string] $formattedDate = [string]::Empty
+		switch ($dateScope)
+		{
+			'Hour' { $formattedDate = $date.ToString('yyyy-MM-dd-HH') }
+			'Day' { $formattedDate = $date.ToString('yyyy-MM-dd') }
+			'Month' { $formattedDate = $date.ToString('yyyy-MM') }
+			'Year' { $formattedDate = $date.ToString('yyyy') }
+			Default { throw "The specified date scope '$dateScope' is not valid. Please provide a valid scope." }
+		}
+		return $formattedDate
+	}
 }
 
 Describe 'Move Files' {
@@ -47,112 +62,133 @@ Describe 'Move Files' {
 
 	Context 'When sorting the files by year' {
 		It 'Should move files into date directories by year' {
+			# Arrange.
+			[string] $targetDirectoriesDateScope = 'Year'
+
 			# Act.
 			Move-FilesIntoDateDirectories `
 				-SourceDirectoryPath $SourceDirectoryPath `
 				-TargetDirectoryPath $TargetDirectoryPath `
-				-TargetDirectoriesDateScope 'Year' `
+				-TargetDirectoriesDateScope $targetDirectoriesDateScope `
 				-Force
 
 			# Assert.
-			[string[]] $expectedDirectoryPaths = @(
-				Join-Path -Path $TargetDirectoryPath -ChildPath '2020'
-				Join-Path -Path $TargetDirectoryPath -ChildPath '2021'
-				Join-Path -Path $TargetDirectoryPath -ChildPath '2022'
-			)
-			[string[]] $actualDirectoryPaths =
-			Get-ChildItem -Path $TargetDirectoryPath -Directory |
-				Select-Object -ExpandProperty FullName
-
-			$actualDirectoryPaths | Should -Be $expectedDirectoryPaths
-
 			[string[]] $expectedFilePaths = @()
 			$TestFilesToCreate | ForEach-Object {
 				[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
 				[DateTime] $lastWriteTime = [DateTime]::Parse($_.LastWriteTime)
-				[string] $expectedDirectoryName = $lastWriteTime.Year
+				[string] $expectedDirectoryName =
+					GetFormattedDate -date $lastWriteTime -dateScope $targetDirectoriesDateScope
 				[string] $expectedFilePath =
 					Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
-				$expectedFilePaths += $expectedFilePath
-			}
 
-			$expectedFilePaths | ForEach-Object {
-				$_ | Should -Exist
+				$expectedFilePaths += $expectedFilePath
 			}
 
 			[string[]] $actualFilePaths =
 				Get-ChildItem -Path $TargetDirectoryPath -Recurse -File |
 					Select-Object -ExpandProperty FullName
+
 			$actualFilePaths | Should -Be $expectedFilePaths
 		}
 	}
 
 	Context 'When sorting the files by month' {
 		It 'Should move files into date directories by month' {
+			# Arrange.
+			[string] $targetDirectoriesDateScope = 'Month'
+
 			# Act.
 			Move-FilesIntoDateDirectories `
 				-SourceDirectoryPath $SourceDirectoryPath `
 				-TargetDirectoryPath $TargetDirectoryPath `
-				-TargetDirectoriesDateScope 'Month' `
+				-TargetDirectoriesDateScope $targetDirectoriesDateScope `
 				-Force
 
 			# Assert.
-			[string[]] $expectedDirectoryPaths = @(
-				Join-Path -Path $TargetDirectoryPath -ChildPath "2020-$TestFileLastWriteTimeMonth"
-				Join-Path -Path $TargetDirectoryPath -ChildPath "2021-$TestFileLastWriteTimeMonth"
-				Join-Path -Path $TargetDirectoryPath -ChildPath "2022-$TestFileLastWriteTimeMonth"
-			)
-			[string[]] $actualDirectoryPaths =
-			Get-ChildItem -Path $TargetDirectoryPath -Directory |
-				Select-Object -ExpandProperty FullName
+			[string[]] $expectedFilePaths = @()
+			$TestFilesToCreate | ForEach-Object {
+				[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
+				[DateTime] $lastWriteTime = [DateTime]::Parse($_.LastWriteTime)
+				[string] $expectedDirectoryName =
+					GetFormattedDate -date $lastWriteTime -dateScope $targetDirectoriesDateScope
+				[string] $expectedFilePath =
+					Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
 
-			$actualDirectoryPaths | Should -Be $expectedDirectoryPaths
+				$expectedFilePaths += $expectedFilePath
+			}
+
+			[string[]] $actualFilePaths =
+				Get-ChildItem -Path $TargetDirectoryPath -Recurse -File |
+					Select-Object -ExpandProperty FullName
+
+			$actualFilePaths | Should -Be $expectedFilePaths
 		}
 	}
 
 	Context 'When sorting the files by day' {
 		It 'Should move files into date directories by day' {
+			# Arrange.
+			[string] $targetDirectoriesDateScope = 'Day'
+
 			# Act.
 			Move-FilesIntoDateDirectories `
 				-SourceDirectoryPath $SourceDirectoryPath `
 				-TargetDirectoryPath $TargetDirectoryPath `
-				-TargetDirectoriesDateScope 'Day' `
+				-TargetDirectoriesDateScope $targetDirectoriesDateScope `
 				-Force
 
 			# Assert.
-			[string[]] $expectedDirectoryPaths = @(
-				Join-Path -Path $TargetDirectoryPath -ChildPath "2020-$TestFileLastWriteTimeMonth-$TestFileLastWriteTimeDay"
-				Join-Path -Path $TargetDirectoryPath -ChildPath "2021-$TestFileLastWriteTimeMonth-$TestFileLastWriteTimeDay"
-				Join-Path -Path $TargetDirectoryPath -ChildPath "2022-$TestFileLastWriteTimeMonth-$TestFileLastWriteTimeDay"
-			)
-			[string[]] $actualDirectoryPaths =
-			Get-ChildItem -Path $TargetDirectoryPath -Directory |
+			[string[]] $expectedFilePaths = @()
+			$TestFilesToCreate | ForEach-Object {
+				[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
+				[DateTime] $lastWriteTime = [DateTime]::Parse($_.LastWriteTime)
+				[string] $expectedDirectoryName =
+				GetFormattedDate -date $lastWriteTime -dateScope $targetDirectoriesDateScope
+				[string] $expectedFilePath =
+				Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
+
+				$expectedFilePaths += $expectedFilePath
+			}
+
+			[string[]] $actualFilePaths =
+			Get-ChildItem -Path $TargetDirectoryPath -Recurse -File |
 				Select-Object -ExpandProperty FullName
 
-			$actualDirectoryPaths | Should -Be $expectedDirectoryPaths
+			$actualFilePaths | Should -Be $expectedFilePaths
 		}
 	}
 
 	Context 'When sorting the files by hour' {
 		It 'Should move files into date directories by hour' {
+			# Arrange.
+			[string] $targetDirectoriesDateScope = 'Hour'
+
 			# Act.
 			Move-FilesIntoDateDirectories `
 				-SourceDirectoryPath $SourceDirectoryPath `
 				-TargetDirectoryPath $TargetDirectoryPath `
-				-TargetDirectoriesDateScope 'Hour' `
+				-TargetDirectoriesDateScope $targetDirectoriesDateScope `
 				-Force
 
 			# Assert.
-			[string[]] $expectedDirectoryPaths = @(
-				Join-Path -Path $TargetDirectoryPath -ChildPath "2020-$TestFileLastWriteTimeMonth-$TestFileLastWriteTimeDay-$TestFileLastWriteTimeHour"
-				Join-Path -Path $TargetDirectoryPath -ChildPath "2021-$TestFileLastWriteTimeMonth-$TestFileLastWriteTimeDay-$TestFileLastWriteTimeHour"
-				Join-Path -Path $TargetDirectoryPath -ChildPath "2022-$TestFileLastWriteTimeMonth-$TestFileLastWriteTimeDay-$TestFileLastWriteTimeHour"
-			)
-			[string[]] $actualDirectoryPaths =
-			Get-ChildItem -Path $TargetDirectoryPath -Directory |
+			[string[]] $expectedFilePaths = @()
+			$TestFilesToCreate | ForEach-Object {
+				[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
+				[DateTime] $lastWriteTime = [DateTime]::Parse($_.LastWriteTime)
+				[string] $expectedDirectoryName =
+				GetFormattedDate -date $lastWriteTime -dateScope $targetDirectoriesDateScope
+				[string] $expectedFilePath =
+				Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
+
+				$expectedFilePaths += $expectedFilePath
+			}
+
+			[string[]] $actualFilePaths =
+			Get-ChildItem -Path $TargetDirectoryPath -Recurse -File |
 				Select-Object -ExpandProperty FullName
 
-			$actualDirectoryPaths | Should -Be $expectedDirectoryPaths
+			$actualFilePaths | Should -Be $expectedFilePaths
 		}
 	}
 }

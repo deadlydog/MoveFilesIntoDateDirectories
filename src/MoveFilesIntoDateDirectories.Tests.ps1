@@ -3,7 +3,7 @@ BeforeAll {
 	Import-Module -Name $sutModulePath -Force
 }
 
-# Use InModuleScope so we can call internal module functions.
+# Use InModuleScope so we can call internal module functions. e.g. GetFormattedDate.
 InModuleScope -ModuleName MoveFilesIntoDateDirectories {
 	Describe 'Move Files' {
 		BeforeEach {

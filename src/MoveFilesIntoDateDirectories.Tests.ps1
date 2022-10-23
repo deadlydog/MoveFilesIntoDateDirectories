@@ -11,17 +11,17 @@ InModuleScope -ModuleName $ModuleName {
 
 			[hashtable[]] $DefaultTestFiles = @(
 				@{
-					SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath '2020.txt'
+					SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath '2020-RootDirectory.txt'
 					CreationTime = '2020-01-01 01:00:00'
 					LastWriteTime = '2020-12-31 23:00:00'
 				}
 				@{
-					SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath 'ChildDirectory\2021.csv'
+					SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath 'ChildDirectory\2021-OneDirectoryDeep.csv'
 					CreationTime = '2021-01-01 01:00:00'
 					LastWriteTime = '2021-12-31 23:00:00'
 				}
 				@{
-					SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath 'Multiple\Nested\Directories\2022.log'
+					SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath 'Multiple\Nested\Directories\2022-ThreeDirectoriesDeep.log'
 					CreationTime = '2022-01-01 01:00:00'
 					LastWriteTime = '2022-12-31 23:00:00'
 				}
@@ -64,17 +64,11 @@ InModuleScope -ModuleName $ModuleName {
 					-Force
 
 				# Assert.
-				[string[]] $expectedFilePaths = @()
-				$DefaultTestFiles | ForEach-Object {
-					[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
-					[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
-					[string] $expectedDirectoryName =
-						GetFormattedDate -date $oldestTime -dateScope $destinationDirectoriesDateScope
-					[string] $expectedFilePath =
-						Join-Path -Path $DestinationDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
-
-					$expectedFilePaths += $expectedFilePath
-				}
+				[string[]] $expectedFilePaths = @(
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020\2020-RootDirectory.txt'
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021\2021-OneDirectoryDeep.csv'
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2022\2022-ThreeDirectoriesDeep.log'
+				)
 
 				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
 
@@ -96,17 +90,11 @@ InModuleScope -ModuleName $ModuleName {
 					-Force
 
 				# Assert.
-				[string[]] $expectedFilePaths = @()
-				$DefaultTestFiles | ForEach-Object {
-					[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
-					[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
-					[string] $expectedDirectoryName =
-						GetFormattedDate -date $oldestTime -dateScope $destinationDirectoriesDateScope
-					[string] $expectedFilePath =
-						Join-Path -Path $DestinationDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
-
-					$expectedFilePaths += $expectedFilePath
-				}
+				[string[]] $expectedFilePaths = @(
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020-01\2020-RootDirectory.txt'
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021-01\2021-OneDirectoryDeep.csv'
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2022-01\2022-ThreeDirectoriesDeep.log'
+				)
 
 				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
 
@@ -128,17 +116,11 @@ InModuleScope -ModuleName $ModuleName {
 					-Force
 
 				# Assert.
-				[string[]] $expectedFilePaths = @()
-				$DefaultTestFiles | ForEach-Object {
-					[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
-					[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
-					[string] $expectedDirectoryName =
-						GetFormattedDate -date $oldestTime -dateScope $destinationDirectoriesDateScope
-					[string] $expectedFilePath =
-						Join-Path -Path $DestinationDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
-
-					$expectedFilePaths += $expectedFilePath
-				}
+				[string[]] $expectedFilePaths = @(
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020-01-01\2020-RootDirectory.txt'
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021-01-01\2021-OneDirectoryDeep.csv'
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2022-01-01\2022-ThreeDirectoriesDeep.log'
+				)
 
 				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
 
@@ -160,17 +142,11 @@ InModuleScope -ModuleName $ModuleName {
 					-Force
 
 				# Assert.
-				[string[]] $expectedFilePaths = @()
-				$DefaultTestFiles | ForEach-Object {
-					[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
-					[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
-					[string] $expectedDirectoryName =
-						GetFormattedDate -date $oldestTime -dateScope $destinationDirectoriesDateScope
-					[string] $expectedFilePath =
-						Join-Path -Path $DestinationDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
-
-					$expectedFilePaths += $expectedFilePath
-				}
+				[string[]] $expectedFilePaths = @(
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020-01-01-01\2020-RootDirectory.txt'
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021-01-01-01\2021-OneDirectoryDeep.csv'
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2022-01-01-01\2022-ThreeDirectoriesDeep.log'
+				)
 
 				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
 
@@ -194,25 +170,10 @@ InModuleScope -ModuleName $ModuleName {
 					-Force
 
 				# Assert.
-				[string[]] $expectedFilePaths = @()
-				$DefaultTestFiles |
-					Where-Object {
-						[string] $relativeDirectoryPath = $_.SourceFilePath.Replace($SourceDirectoryPath, '').TrimStart('\')
-						[string[]] $directories = $relativeDirectoryPath.Split('\')
-						[int] $numberOfChildDirectories = $directories.Length - 1
-
-						return $numberOfChildDirectories -le $maxDirectoryDepth
-					} |
-					ForEach-Object {
-						[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
-						[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
-						[string] $expectedDirectoryName =
-							GetFormattedDate -date $oldestTime -dateScope $destinationDirectoriesDateScope
-						[string] $expectedFilePath =
-							Join-Path -Path $DestinationDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
-
-						$expectedFilePaths += $expectedFilePath
-					}
+				[string[]] $expectedFilePaths = @(
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020\2020-RootDirectory.txt'
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021\2021-OneDirectoryDeep.csv'
+				)
 
 				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
 
@@ -228,12 +189,12 @@ InModuleScope -ModuleName $ModuleName {
 
 				[hashtable[]] $testFiles = @(
 					@{
-						SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath '2020.txt'
+						SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath '2020-RootDirectory.txt'
 						CreationTime = '2020-12-31 23:00:00'
 						LastWriteTime = '2020-01-01 01:00:00'
 					}
 					@{
-						SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath 'ChildDirectory\2021.csv'
+						SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath 'ChildDirectory\2021-OneDirectoryDeep.csv'
 						CreationTime = '2021-01-01 01:00:00'
 						LastWriteTime = '2021-12-31 23:00:00'
 					}
@@ -241,8 +202,8 @@ InModuleScope -ModuleName $ModuleName {
 				CreateTestFiles -testFilesToCreate $testFiles
 
 				[string[]] $expectedFilePaths = @(
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020-12\2020.txt'
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021-12\2021.csv'
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020-12\2020-RootDirectory.txt'
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021-12\2021-OneDirectoryDeep.csv'
 				)
 
 				# Act.

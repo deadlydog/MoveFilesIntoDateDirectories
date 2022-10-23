@@ -21,7 +21,7 @@ BeforeAll {
 Describe 'Move Files' {
 	BeforeEach {
 		[string] $SourceDirectoryPath = Join-Path -Path $TestDrive -ChildPath 'SourceFiles'
-		[string] $TargetDirectoryPath = Join-Path -Path $TestDrive -ChildPath 'SortedFiles'
+		[string] $DestinationDirectoryPath = Join-Path -Path $TestDrive -ChildPath 'SortedFiles'
 
 		[hashtable[]] $TestFilesToCreate = @(
 			@{
@@ -49,19 +49,19 @@ Describe 'Move Files' {
 		}
 
 		# Ensure files moved from other test runs are not present.
-		Remove-Item -Path $TargetDirectoryPath -Force -Recurse -ErrorAction SilentlyContinue
+		Remove-Item -Path $DestinationDirectoryPath -Force -Recurse -ErrorAction SilentlyContinue
 	}
 
 	Context 'When sorting the files by year' {
 		It 'Should move files into date directories by year' {
 			# Arrange.
-			[string] $targetDirectoriesDateScope = 'Year'
+			[string] $destinationDirectoriesDateScope = 'Year'
 
 			# Act.
 			Move-FilesIntoDateDirectories `
 				-SourceDirectoryPath $SourceDirectoryPath `
-				-TargetDirectoryPath $TargetDirectoryPath `
-				-TargetDirectoriesDateScope $targetDirectoriesDateScope `
+				-DestinationDirectoryPath $DestinationDirectoryPath `
+				-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
 				-Force
 
 			# Assert.
@@ -70,15 +70,15 @@ Describe 'Move Files' {
 				[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
 				[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
 				[string] $expectedDirectoryName =
-					GetFormattedDate -date $oldestTime -dateScope $targetDirectoriesDateScope
+					GetFormattedDate -date $oldestTime -dateScope $destinationDirectoriesDateScope
 				[string] $expectedFilePath =
-					Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
+					Join-Path -Path $DestinationDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
 
 				$expectedFilePaths += $expectedFilePath
 			}
 
 			[string[]] $actualFilePaths =
-				Get-ChildItem -Path $TargetDirectoryPath -Recurse -File |
+				Get-ChildItem -Path $DestinationDirectoryPath -Recurse -File |
 					Select-Object -ExpandProperty FullName
 
 			$actualFilePaths | Should -Be $expectedFilePaths
@@ -88,13 +88,13 @@ Describe 'Move Files' {
 	Context 'When sorting the files by month' {
 		It 'Should move files into date directories by month' {
 			# Arrange.
-			[string] $targetDirectoriesDateScope = 'Month'
+			[string] $destinationDirectoriesDateScope = 'Month'
 
 			# Act.
 			Move-FilesIntoDateDirectories `
 				-SourceDirectoryPath $SourceDirectoryPath `
-				-TargetDirectoryPath $TargetDirectoryPath `
-				-TargetDirectoriesDateScope $targetDirectoriesDateScope `
+				-DestinationDirectoryPath $DestinationDirectoryPath `
+				-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
 				-Force
 
 			# Assert.
@@ -103,15 +103,15 @@ Describe 'Move Files' {
 				[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
 				[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
 				[string] $expectedDirectoryName =
-					GetFormattedDate -date $oldestTime -dateScope $targetDirectoriesDateScope
+					GetFormattedDate -date $oldestTime -dateScope $destinationDirectoriesDateScope
 				[string] $expectedFilePath =
-					Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
+					Join-Path -Path $DestinationDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
 
 				$expectedFilePaths += $expectedFilePath
 			}
 
 			[string[]] $actualFilePaths =
-				Get-ChildItem -Path $TargetDirectoryPath -Recurse -File |
+				Get-ChildItem -Path $DestinationDirectoryPath -Recurse -File |
 					Select-Object -ExpandProperty FullName
 
 			$actualFilePaths | Should -Be $expectedFilePaths
@@ -121,13 +121,13 @@ Describe 'Move Files' {
 	Context 'When sorting the files by day' {
 		It 'Should move files into date directories by day' {
 			# Arrange.
-			[string] $targetDirectoriesDateScope = 'Day'
+			[string] $destinationDirectoriesDateScope = 'Day'
 
 			# Act.
 			Move-FilesIntoDateDirectories `
 				-SourceDirectoryPath $SourceDirectoryPath `
-				-TargetDirectoryPath $TargetDirectoryPath `
-				-TargetDirectoriesDateScope $targetDirectoriesDateScope `
+				-DestinationDirectoryPath $DestinationDirectoryPath `
+				-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
 				-Force
 
 			# Assert.
@@ -136,16 +136,16 @@ Describe 'Move Files' {
 				[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
 				[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
 				[string] $expectedDirectoryName =
-					GetFormattedDate -date $oldestTime -dateScope $targetDirectoriesDateScope
+					GetFormattedDate -date $oldestTime -dateScope $destinationDirectoriesDateScope
 				[string] $expectedFilePath =
-					Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
+					Join-Path -Path $DestinationDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
 
 				$expectedFilePaths += $expectedFilePath
 			}
 
 			[string[]] $actualFilePaths =
-			Get-ChildItem -Path $TargetDirectoryPath -Recurse -File |
-				Select-Object -ExpandProperty FullName
+				Get-ChildItem -Path $DestinationDirectoryPath -Recurse -File |
+					Select-Object -ExpandProperty FullName
 
 			$actualFilePaths | Should -Be $expectedFilePaths
 		}
@@ -154,13 +154,13 @@ Describe 'Move Files' {
 	Context 'When sorting the files by hour' {
 		It 'Should move files into date directories by hour' {
 			# Arrange.
-			[string] $targetDirectoriesDateScope = 'Hour'
+			[string] $destinationDirectoriesDateScope = 'Hour'
 
 			# Act.
 			Move-FilesIntoDateDirectories `
 				-SourceDirectoryPath $SourceDirectoryPath `
-				-TargetDirectoryPath $TargetDirectoryPath `
-				-TargetDirectoriesDateScope $targetDirectoriesDateScope `
+				-DestinationDirectoryPath $DestinationDirectoryPath `
+				-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
 				-Force
 
 			# Assert.
@@ -169,16 +169,16 @@ Describe 'Move Files' {
 				[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
 				[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
 				[string] $expectedDirectoryName =
-					GetFormattedDate -date $oldestTime -dateScope $targetDirectoriesDateScope
+					GetFormattedDate -date $oldestTime -dateScope $destinationDirectoriesDateScope
 				[string] $expectedFilePath =
-					Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
+					Join-Path -Path $DestinationDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
 
 				$expectedFilePaths += $expectedFilePath
 			}
 
 			[string[]] $actualFilePaths =
-			Get-ChildItem -Path $TargetDirectoryPath -Recurse -File |
-				Select-Object -ExpandProperty FullName
+				Get-ChildItem -Path $DestinationDirectoryPath -Recurse -File |
+					Select-Object -ExpandProperty FullName
 
 			$actualFilePaths | Should -Be $expectedFilePaths
 		}
@@ -188,13 +188,13 @@ Describe 'Move Files' {
 		It 'Should only move files from the source directory up to the maximum depth' {
 			# Arrange.
 			[int] $maxDirectoryDepth = 1
-			[string] $targetDirectoriesDateScope = 'Year'
+			[string] $destinationDirectoriesDateScope = 'Year'
 
 			# Act.
 			Move-FilesIntoDateDirectories `
 				-SourceDirectoryPath $SourceDirectoryPath `
-				-TargetDirectoryPath $TargetDirectoryPath `
-				-TargetDirectoriesDateScope $targetDirectoriesDateScope `
+				-DestinationDirectoryPath $DestinationDirectoryPath `
+				-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
 				-SourceDirectoryDepthToSearch $maxDirectoryDepth `
 				-Force
 
@@ -212,16 +212,16 @@ Describe 'Move Files' {
 					[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
 					[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
 					[string] $expectedDirectoryName =
-						GetFormattedDate -date $oldestTime -dateScope $targetDirectoriesDateScope
+						GetFormattedDate -date $oldestTime -dateScope $destinationDirectoriesDateScope
 					[string] $expectedFilePath =
-						Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
+						Join-Path -Path $DestinationDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
 
 					$expectedFilePaths += $expectedFilePath
 				}
 
 			[string[]] $actualFilePaths =
-			Get-ChildItem -Path $TargetDirectoryPath -Recurse -File |
-				Select-Object -ExpandProperty FullName
+				Get-ChildItem -Path $DestinationDirectoryPath -Recurse -File |
+					Select-Object -ExpandProperty FullName
 
 			$actualFilePaths | Should -Be $expectedFilePaths
 		}

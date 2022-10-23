@@ -15,11 +15,11 @@ function Move-FilesIntoDateDirectories
 
 		[Parameter(Mandatory = $true, HelpMessage = 'The directory to create the date-named directories in and move the files to.')]
 		[ValidateNotNullOrEmpty()]
-		[System.IO.DirectoryInfo] $TargetDirectoryPath,
+		[System.IO.DirectoryInfo] $DestinationDirectoryPath,
 
-		[Parameter(Mandatory = $false, HelpMessage = 'The scope at which directories should be created. Accepted values include "Hour", "Day", "Month", or "Year". e.g. If you specify "Day" files will be moved from the `SourceDirectoryPath` to `TargetDirectoryPath\yyyy-MM-dd`.')]
+		[Parameter(Mandatory = $false, HelpMessage = 'The scope at which directories should be created. Accepted values include "Hour", "Day", "Month", or "Year". e.g. If you specify "Day" files will be moved from the `SourceDirectoryPath` to `DestinationDirectoryPath\yyyy-MM-dd`.')]
 		[ValidateSet('Hour', 'Day', 'Month', 'Year')]
-		[string] $TargetDirectoriesDateScope = 'Day',
+		[string] $DestinationDirectoriesDateScope = 'Day',
 
 		[Parameter(Mandatory = $false, HelpMessage = "The properties of the file that should be used to determine the file's date. If a property does not exist on the file, it will be ignored. Default value is @('Date taken', 'Media created', 'LastWriteTime', 'CreationTime').")]
 		[string[]] $FileDatePropertiesToCheck = @('Date taken', 'Media created', 'LastWriteTime', 'CreationTime'),
@@ -48,8 +48,8 @@ function Move-FilesIntoDateDirectories
 			[System.IO.FileInfo] $file = $_
 
 			[DateTime] $fileDate = GetFileDate -file $file -fileDatePropertiesToCheck $FileDatePropertiesToCheck -fileDateStrategy $FileDateStrategy
-			[string] $dateDirectoryName = GetFormattedDate -date $fileDate -dateScope $TargetDirectoriesDateScope
-			[string] $dateDirectoryPath = Join-Path -Path $TargetDirectoryPath -ChildPath $dateDirectoryName
+			[string] $dateDirectoryName = GetFormattedDate -date $fileDate -dateScope $DestinationDirectoriesDateScope
+			[string] $dateDirectoryPath = Join-Path -Path $DestinationDirectoryPath -ChildPath $dateDirectoryName
 
 			EnsureDirectoryExists -directoryPath $dateDirectoryPath
 

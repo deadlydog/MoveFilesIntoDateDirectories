@@ -14,6 +14,7 @@ Fixes:
 Breaking Changes:
 
 - Changed default behaviour to use the oldest date out of 'Date taken', 'Media created', 'LastWriteTime', and 'CreationTime', rather than just using the LastWriteTime.
+- Changed `Target` parameters to `Destination` to be more consistent with PowerShell terminology.
 
 ## v1.1.0 - October 19, 2022
 

@@ -1,8 +1,8 @@
 # Move Files Into Date Directories
 
 [This PowerShell script](src/MoveFilesIntoDateDirectories.ps1) will scan all files in the `SourceDirectoryPath` and then move them into directories whose name is based on the file's LastWriteTime date.
-Target directories will be created if they don't already exist, using a name based upon the specified `TargetDirectoriesDateScope`, and they will be created within the `TargetDirectoryPath`.
-It is acceptable for the `SourceDirectoryPath` and `TargetDirectoryPath` to be the same directory path.
+Destination directories will be created if they don't already exist, using a name based upon the specified `DestinationDirectoriesDateScope`, and they will be created within the `DestinationDirectoryPath`.
+It is acceptable for the `SourceDirectoryPath` and `DestinationDirectoryPath` to be the same directory path.
 
 A common use-case of this script is to move photos into date-named directories based on when the photo was taken.
 
@@ -14,9 +14,9 @@ Some various files that were last updated on different dates:
 
 ![Source directory screenshot](docs/Images/SourceDirectoryScreenshot.png)
 
-The target directory containing the same files after the script ran and moved them into month date-named directories based on their LastWriteTime:
+The destination directory containing the same files after the script ran and moved them into month date-named directories based on their LastWriteTime:
 
-![Target directory screenshot](docs/Images/TargetDirectoryScreenshot.png)
+![Destination directory screenshot](docs/Images/DestinationDirectoryScreenshot.png)
 
 ## Changelog
 

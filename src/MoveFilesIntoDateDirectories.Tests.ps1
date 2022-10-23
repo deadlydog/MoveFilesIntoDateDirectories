@@ -68,9 +68,9 @@ Describe 'Move Files' {
 			[string[]] $expectedFilePaths = @()
 			$TestFilesToCreate | ForEach-Object {
 				[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
-				[DateTime] $lastWriteTime = [DateTime]::Parse($_.LastWriteTime)
+				[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
 				[string] $expectedDirectoryName =
-					GetFormattedDate -date $lastWriteTime -dateScope $targetDirectoriesDateScope
+					GetFormattedDate -date $oldestTime -dateScope $targetDirectoriesDateScope
 				[string] $expectedFilePath =
 					Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
 
@@ -101,9 +101,9 @@ Describe 'Move Files' {
 			[string[]] $expectedFilePaths = @()
 			$TestFilesToCreate | ForEach-Object {
 				[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
-				[DateTime] $lastWriteTime = [DateTime]::Parse($_.LastWriteTime)
+				[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
 				[string] $expectedDirectoryName =
-					GetFormattedDate -date $lastWriteTime -dateScope $targetDirectoriesDateScope
+					GetFormattedDate -date $oldestTime -dateScope $targetDirectoriesDateScope
 				[string] $expectedFilePath =
 					Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
 
@@ -134,11 +134,11 @@ Describe 'Move Files' {
 			[string[]] $expectedFilePaths = @()
 			$TestFilesToCreate | ForEach-Object {
 				[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
-				[DateTime] $lastWriteTime = [DateTime]::Parse($_.LastWriteTime)
+				[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
 				[string] $expectedDirectoryName =
-				GetFormattedDate -date $lastWriteTime -dateScope $targetDirectoriesDateScope
+					GetFormattedDate -date $oldestTime -dateScope $targetDirectoriesDateScope
 				[string] $expectedFilePath =
-				Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
+					Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
 
 				$expectedFilePaths += $expectedFilePath
 			}
@@ -167,11 +167,11 @@ Describe 'Move Files' {
 			[string[]] $expectedFilePaths = @()
 			$TestFilesToCreate | ForEach-Object {
 				[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
-				[DateTime] $lastWriteTime = [DateTime]::Parse($_.LastWriteTime)
+				[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
 				[string] $expectedDirectoryName =
-				GetFormattedDate -date $lastWriteTime -dateScope $targetDirectoriesDateScope
+					GetFormattedDate -date $oldestTime -dateScope $targetDirectoriesDateScope
 				[string] $expectedFilePath =
-				Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
+					Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
 
 				$expectedFilePaths += $expectedFilePath
 			}
@@ -210,11 +210,11 @@ Describe 'Move Files' {
 				} |
 				ForEach-Object {
 					[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
-					[DateTime] $lastWriteTime = [DateTime]::Parse($_.LastWriteTime)
+					[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
 					[string] $expectedDirectoryName =
-					GetFormattedDate -date $lastWriteTime -dateScope $targetDirectoriesDateScope
+						GetFormattedDate -date $oldestTime -dateScope $targetDirectoriesDateScope
 					[string] $expectedFilePath =
-					Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
+						Join-Path -Path $TargetDirectoryPath -ChildPath "$expectedDirectoryName\$fileName"
 
 					$expectedFilePaths += $expectedFilePath
 				}

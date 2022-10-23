@@ -5,18 +5,18 @@ Import-Module -Name $SutModulePath -Force
 # Use InModuleScope so we can call internal module functions. e.g. GetFormattedDate.
 InModuleScope -ModuleName $ModuleName {
 	Describe 'Move Files' {
-		BeforeEach {
+		BeforeAll {
 			[string] $SourceDirectoryPath = Join-Path -Path $TestDrive -ChildPath 'SourceFiles'
 			[string] $DestinationDirectoryPath = Join-Path -Path $TestDrive -ChildPath 'SortedFiles'
 
-			[hashtable[]] $TestFilesToCreate = @(
+			[hashtable[]] $DefaultTestFiles = @(
 				@{
 					SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath '2020.txt'
 					CreationTime = '2020-01-01 01:00:00'
 					LastWriteTime = '2020-12-31 23:00:00'
 				}
 				@{
-					SourceFilePath = Join-Path -Path $sourceDirectoryPath -ChildPath 'ChildDirectory\2021.csv'
+					SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath 'ChildDirectory\2021.csv'
 					CreationTime = '2021-01-01 01:00:00'
 					LastWriteTime = '2021-12-31 23:00:00'
 				}
@@ -27,13 +27,25 @@ InModuleScope -ModuleName $ModuleName {
 				}
 			)
 
-			# Create the temp files with the specified properties.
-			$TestFilesToCreate | ForEach-Object {
-				New-Item -Path $_.SourceFilePath -ItemType File -Force > $null
-				Set-ItemProperty -Path $_.SourceFilePath -Name CreationTime -Value $_.CreationTime
-				Set-ItemProperty -Path $_.SourceFilePath -Name LastWriteTime -Value $_.LastWriteTime
+			function CreateTestFiles([hashtable[]] $testFilesToCreate)
+			{
+				# Create the temp files with the specified properties.
+				$testFilesToCreate | ForEach-Object {
+					New-Item -Path $_.SourceFilePath -ItemType File -Force > $null
+					Set-ItemProperty -Path $_.SourceFilePath -Name CreationTime -Value $_.CreationTime
+					Set-ItemProperty -Path $_.SourceFilePath -Name LastWriteTime -Value $_.LastWriteTime
+				}
 			}
 
+			function GetFilePathsInDirectory([string] $directoryPath)
+			{
+				[string[]] $filePaths =
+					Get-ChildItem -Path $directoryPath -Recurse -Force -File |
+						Select-Object -ExpandProperty FullName
+				return $filePaths
+			}
+		}
+		BeforeEach {
 			# Ensure files moved from other test runs are not present.
 			Remove-Item -Path $DestinationDirectoryPath -Force -Recurse -ErrorAction SilentlyContinue
 		}
@@ -42,6 +54,7 @@ InModuleScope -ModuleName $ModuleName {
 			It 'Should move files into date directories by year' {
 				# Arrange.
 				[string] $destinationDirectoriesDateScope = 'Year'
+				CreateTestFiles -testFilesToCreate $DefaultTestFiles
 
 				# Act.
 				Move-FilesIntoDateDirectories `
@@ -52,7 +65,7 @@ InModuleScope -ModuleName $ModuleName {
 
 				# Assert.
 				[string[]] $expectedFilePaths = @()
-				$TestFilesToCreate | ForEach-Object {
+				$DefaultTestFiles | ForEach-Object {
 					[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
 					[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
 					[string] $expectedDirectoryName =
@@ -63,9 +76,7 @@ InModuleScope -ModuleName $ModuleName {
 					$expectedFilePaths += $expectedFilePath
 				}
 
-				[string[]] $actualFilePaths =
-					Get-ChildItem -Path $DestinationDirectoryPath -Recurse -File |
-						Select-Object -ExpandProperty FullName
+				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
 
 				$actualFilePaths | Should -Be $expectedFilePaths
 			}
@@ -75,6 +86,7 @@ InModuleScope -ModuleName $ModuleName {
 			It 'Should move files into date directories by month' {
 				# Arrange.
 				[string] $destinationDirectoriesDateScope = 'Month'
+				CreateTestFiles -testFilesToCreate $DefaultTestFiles
 
 				# Act.
 				Move-FilesIntoDateDirectories `
@@ -85,7 +97,7 @@ InModuleScope -ModuleName $ModuleName {
 
 				# Assert.
 				[string[]] $expectedFilePaths = @()
-				$TestFilesToCreate | ForEach-Object {
+				$DefaultTestFiles | ForEach-Object {
 					[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
 					[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
 					[string] $expectedDirectoryName =
@@ -96,9 +108,7 @@ InModuleScope -ModuleName $ModuleName {
 					$expectedFilePaths += $expectedFilePath
 				}
 
-				[string[]] $actualFilePaths =
-					Get-ChildItem -Path $DestinationDirectoryPath -Recurse -File |
-						Select-Object -ExpandProperty FullName
+				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
 
 				$actualFilePaths | Should -Be $expectedFilePaths
 			}
@@ -108,6 +118,7 @@ InModuleScope -ModuleName $ModuleName {
 			It 'Should move files into date directories by day' {
 				# Arrange.
 				[string] $destinationDirectoriesDateScope = 'Day'
+				CreateTestFiles -testFilesToCreate $DefaultTestFiles
 
 				# Act.
 				Move-FilesIntoDateDirectories `
@@ -118,7 +129,7 @@ InModuleScope -ModuleName $ModuleName {
 
 				# Assert.
 				[string[]] $expectedFilePaths = @()
-				$TestFilesToCreate | ForEach-Object {
+				$DefaultTestFiles | ForEach-Object {
 					[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
 					[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
 					[string] $expectedDirectoryName =
@@ -129,9 +140,7 @@ InModuleScope -ModuleName $ModuleName {
 					$expectedFilePaths += $expectedFilePath
 				}
 
-				[string[]] $actualFilePaths =
-					Get-ChildItem -Path $DestinationDirectoryPath -Recurse -File |
-						Select-Object -ExpandProperty FullName
+				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
 
 				$actualFilePaths | Should -Be $expectedFilePaths
 			}
@@ -141,6 +150,7 @@ InModuleScope -ModuleName $ModuleName {
 			It 'Should move files into date directories by hour' {
 				# Arrange.
 				[string] $destinationDirectoriesDateScope = 'Hour'
+				CreateTestFiles -testFilesToCreate $DefaultTestFiles
 
 				# Act.
 				Move-FilesIntoDateDirectories `
@@ -151,7 +161,7 @@ InModuleScope -ModuleName $ModuleName {
 
 				# Assert.
 				[string[]] $expectedFilePaths = @()
-				$TestFilesToCreate | ForEach-Object {
+				$DefaultTestFiles | ForEach-Object {
 					[string] $fileName = Split-Path -Path $_.SourceFilePath -Leaf
 					[DateTime] $oldestTime = [DateTime]::Parse($_.CreationTime)
 					[string] $expectedDirectoryName =
@@ -162,9 +172,7 @@ InModuleScope -ModuleName $ModuleName {
 					$expectedFilePaths += $expectedFilePath
 				}
 
-				[string[]] $actualFilePaths =
-					Get-ChildItem -Path $DestinationDirectoryPath -Recurse -File |
-						Select-Object -ExpandProperty FullName
+				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
 
 				$actualFilePaths | Should -Be $expectedFilePaths
 			}
@@ -175,6 +183,7 @@ InModuleScope -ModuleName $ModuleName {
 				# Arrange.
 				[int] $maxDirectoryDepth = 1
 				[string] $destinationDirectoriesDateScope = 'Year'
+				CreateTestFiles -testFilesToCreate $DefaultTestFiles
 
 				# Act.
 				Move-FilesIntoDateDirectories `
@@ -186,7 +195,7 @@ InModuleScope -ModuleName $ModuleName {
 
 				# Assert.
 				[string[]] $expectedFilePaths = @()
-				$TestFilesToCreate |
+				$DefaultTestFiles |
 					Where-Object {
 						[string] $relativeDirectoryPath = $_.SourceFilePath.Replace($SourceDirectoryPath, '').TrimStart('\')
 						[string[]] $directories = $relativeDirectoryPath.Split('\')
@@ -205,9 +214,47 @@ InModuleScope -ModuleName $ModuleName {
 						$expectedFilePaths += $expectedFilePath
 					}
 
-				[string[]] $actualFilePaths =
-					Get-ChildItem -Path $DestinationDirectoryPath -Recurse -File |
-						Select-Object -ExpandProperty FullName
+				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
+
+				$actualFilePaths | Should -Be $expectedFilePaths
+			}
+		}
+
+		Context 'When specifying to use the newest date' {
+			It 'Should move files into date directories with the newest date' {
+				# Arrange.
+				[string] $fileDateStrategy = 'Newest'
+				[string] $destinationDirectoriesDateScope = 'Month'
+
+				[hashtable[]] $testFiles = @(
+					@{
+						SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath '2020.txt'
+						CreationTime = '2020-12-31 23:00:00'
+						LastWriteTime = '2020-01-01 01:00:00'
+					}
+					@{
+						SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath 'ChildDirectory\2021.csv'
+						CreationTime = '2021-01-01 01:00:00'
+						LastWriteTime = '2021-12-31 23:00:00'
+					}
+				)
+				CreateTestFiles -testFilesToCreate $testFiles
+
+				[string[]] $expectedFilePaths = @(
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020-12\2020.txt'
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021-12\2021.csv'
+				)
+
+				# Act.
+				Move-FilesIntoDateDirectories `
+					-SourceDirectoryPath $SourceDirectoryPath `
+					-DestinationDirectoryPath $DestinationDirectoryPath `
+					-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
+					-FileDateStrategy $fileDateStrategy `
+					-Force
+
+				# Assert.
+				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
 
 				$actualFilePaths | Should -Be $expectedFilePaths
 			}

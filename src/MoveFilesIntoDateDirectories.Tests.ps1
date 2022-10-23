@@ -50,88 +50,43 @@ InModuleScope -ModuleName $ModuleName {
 			Remove-Item -Path $DestinationDirectoryPath -Force -Recurse -ErrorAction SilentlyContinue
 		}
 
-		Context 'When sorting the files by year' {
-			It 'Should move files into date directories by year' {
-				# Arrange.
-				[string] $destinationDirectoriesDateScope = 'Year'
-				CreateTestFiles -testFilesToCreate $DefaultTestFiles
-
-				# Act.
-				Move-FilesIntoDateDirectories `
-					-SourceDirectoryPath $SourceDirectoryPath `
-					-DestinationDirectoryPath $DestinationDirectoryPath `
-					-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
-					-Force
-
-				# Assert.
-				[string[]] $expectedFilePaths = @(
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020\2020-RootDirectory.txt'
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021\2021-OneDirectoryDeep.csv'
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2022\2022-ThreeDirectoriesDeep.log'
+		Context 'When sorting the files by <DateScope>' -ForEach @(
+			@{
+				DateScope = 'Year'
+				ExpectedRelativeFilePaths = @(
+					'2020\2020-RootDirectory.txt'
+					'2021\2021-OneDirectoryDeep.csv'
+					'2022\2022-ThreeDirectoriesDeep.log'
 				)
-
-				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
-
-				$actualFilePaths | Should -Be $expectedFilePaths
 			}
-		}
-
-		Context 'When sorting the files by month' {
-			It 'Should move files into date directories by month' {
-				# Arrange.
-				[string] $destinationDirectoriesDateScope = 'Month'
-				CreateTestFiles -testFilesToCreate $DefaultTestFiles
-
-				# Act.
-				Move-FilesIntoDateDirectories `
-					-SourceDirectoryPath $SourceDirectoryPath `
-					-DestinationDirectoryPath $DestinationDirectoryPath `
-					-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
-					-Force
-
-				# Assert.
-				[string[]] $expectedFilePaths = @(
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020-01\2020-RootDirectory.txt'
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021-01\2021-OneDirectoryDeep.csv'
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2022-01\2022-ThreeDirectoriesDeep.log'
+			@{
+				DateScope = 'Month'
+				ExpectedRelativeFilePaths = @(
+					'2020-01\2020-RootDirectory.txt'
+					'2021-01\2021-OneDirectoryDeep.csv'
+					'2022-01\2022-ThreeDirectoriesDeep.log'
 				)
-
-				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
-
-				$actualFilePaths | Should -Be $expectedFilePaths
 			}
-		}
-
-		Context 'When sorting the files by day' {
-			It 'Should move files into date directories by day' {
-				# Arrange.
-				[string] $destinationDirectoriesDateScope = 'Day'
-				CreateTestFiles -testFilesToCreate $DefaultTestFiles
-
-				# Act.
-				Move-FilesIntoDateDirectories `
-					-SourceDirectoryPath $SourceDirectoryPath `
-					-DestinationDirectoryPath $DestinationDirectoryPath `
-					-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
-					-Force
-
-				# Assert.
-				[string[]] $expectedFilePaths = @(
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020-01-01\2020-RootDirectory.txt'
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021-01-01\2021-OneDirectoryDeep.csv'
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2022-01-01\2022-ThreeDirectoriesDeep.log'
+			@{
+				DateScope = 'Day'
+				ExpectedRelativeFilePaths = @(
+					'2020-01-01\2020-RootDirectory.txt'
+					'2021-01-01\2021-OneDirectoryDeep.csv'
+					'2022-01-01\2022-ThreeDirectoriesDeep.log'
 				)
-
-				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
-
-				$actualFilePaths | Should -Be $expectedFilePaths
 			}
-		}
-
-		Context 'When sorting the files by hour' {
-			It 'Should move files into date directories by hour' {
+			@{
+				DateScope = 'Hour'
+				ExpectedRelativeFilePaths = @(
+					'2020-01-01-01\2020-RootDirectory.txt'
+					'2021-01-01-01\2021-OneDirectoryDeep.csv'
+					'2022-01-01-01\2022-ThreeDirectoriesDeep.log'
+				)
+			}
+		) {
+			It 'Should move files into date directories by <DateScope>' {
 				# Arrange.
-				[string] $destinationDirectoriesDateScope = 'Hour'
+				[string] $destinationDirectoriesDateScope = $DateScope
 				CreateTestFiles -testFilesToCreate $DefaultTestFiles
 
 				# Act.
@@ -142,13 +97,10 @@ InModuleScope -ModuleName $ModuleName {
 					-Force
 
 				# Assert.
-				[string[]] $expectedFilePaths = @(
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020-01-01-01\2020-RootDirectory.txt'
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021-01-01-01\2021-OneDirectoryDeep.csv'
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2022-01-01-01\2022-ThreeDirectoriesDeep.log'
-				)
-
 				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
+				[string[]] $expectedFilePaths = $ExpectedRelativeFilePaths | ForEach-Object {
+					Join-Path -Path $DestinationDirectoryPath -ChildPath $_
+				}
 
 				$actualFilePaths | Should -Be $expectedFilePaths
 			}

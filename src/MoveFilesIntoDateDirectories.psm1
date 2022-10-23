@@ -170,9 +170,12 @@ function GetFileDate([System.IO.FileInfo] $file, [string[]] $fileDatePropertiesT
 	return $fileDateToUse
 }
 
+# Resources on how to get extended file properties:
+#	https://stackoverflow.com/questions/9420055/enumerate-file-properties-in-powershell
+#	https://powershellmagazine.com/2015/04/13/pstip-use-shell-application-to-display-extended-file-attributes/
 function GetFileDatePropertyValue([string] $fileDatePropertyName, [__COMObject] $directoryObject, [__COMObject] $fileObject)
 {
-	[int] $datePropertyIndex = GetFilePropertyIndex -filePropertyName $fileDatePropertyName -directoryObject $directoryObject
+	[int] $datePropertyIndex = GetFileExtendedPropertyIndex -filePropertyName $fileDatePropertyName -directoryObject $directoryObject
 
 	if ($datePropertyIndex -lt 0)
 	{
@@ -190,7 +193,7 @@ function GetFileDatePropertyValue([string] $fileDatePropertyName, [__COMObject] 
 	return $null
 }
 
-function GetFilePropertyIndex([string] $filePropertyName, [__COMObject] $directoryObject)
+function GetFileExtendedPropertyIndex([string] $filePropertyName, [__COMObject] $directoryObject)
 {
 	$propertyIndex = 0
 	do

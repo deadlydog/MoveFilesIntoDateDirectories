@@ -11,6 +11,10 @@ Fixes:
 
 - Do not try to process null files, which would result in an error.
 
+Breaking Changes:
+
+- Changed default behaviour to use the oldest date out of 'Date taken', 'Media created', 'LastWriteTime', and 'CreationTime', rather than just using the LastWriteTime.
+
 ## v1.1.0 - October 19, 2022
 
 Features:

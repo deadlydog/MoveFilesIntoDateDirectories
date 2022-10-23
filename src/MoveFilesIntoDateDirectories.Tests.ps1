@@ -89,6 +89,10 @@ InModuleScope -ModuleName $ModuleName {
 				[string] $destinationDirectoriesDateScope = $DateScope
 				CreateTestFiles -testFilesToCreate $DefaultTestFiles
 
+				[string[]] $expectedFilePaths = $ExpectedRelativeFilePaths | ForEach-Object {
+					Join-Path -Path $DestinationDirectoryPath -ChildPath $_
+				}
+
 				# Act.
 				Move-FilesIntoDateDirectories `
 					-SourceDirectoryPath $SourceDirectoryPath `
@@ -98,9 +102,6 @@ InModuleScope -ModuleName $ModuleName {
 
 				# Assert.
 				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
-				[string[]] $expectedFilePaths = $ExpectedRelativeFilePaths | ForEach-Object {
-					Join-Path -Path $DestinationDirectoryPath -ChildPath $_
-				}
 
 				$actualFilePaths | Should -Be $expectedFilePaths
 			}
@@ -113,6 +114,11 @@ InModuleScope -ModuleName $ModuleName {
 				[string] $destinationDirectoriesDateScope = 'Year'
 				CreateTestFiles -testFilesToCreate $DefaultTestFiles
 
+				[string[]] $expectedFilePaths = @(
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020\2020-RootDirectory.txt'
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021\2021-OneDirectoryDeep.csv'
+				)
+
 				# Act.
 				Move-FilesIntoDateDirectories `
 					-SourceDirectoryPath $SourceDirectoryPath `
@@ -122,11 +128,6 @@ InModuleScope -ModuleName $ModuleName {
 					-Force
 
 				# Assert.
-				[string[]] $expectedFilePaths = @(
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020\2020-RootDirectory.txt'
-					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021\2021-OneDirectoryDeep.csv'
-				)
-
 				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
 
 				$actualFilePaths | Should -Be $expectedFilePaths

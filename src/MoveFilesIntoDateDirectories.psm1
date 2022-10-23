@@ -151,7 +151,7 @@ function GetFileDate([System.IO.FileInfo] $file, [string[]] $fileDatePropertiesT
 		}
 	}
 
-	[DateTime] $fileDateToUse
+	[DateTime] $fileDateToUse = [DateTime]::MinValue
 	if ($null -eq $fileDate)
 	{
 		$fileDateToUse = $file.LastWriteTime

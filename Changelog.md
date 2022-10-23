@@ -4,6 +4,9 @@
 
 Features:
 
+- Allow specifying the file properties that should be used to determine the date to use for the destination directory name.
+  Default is 'Date taken', 'Media created', 'LastWriteTime', and 'CreationTime'.
+- Allow specifying which date strategy should be used for the destination directory name; oldest (default), newest, or specific.
 - Converted script into a module.
 - Write warning if the source directory does not exist.
 

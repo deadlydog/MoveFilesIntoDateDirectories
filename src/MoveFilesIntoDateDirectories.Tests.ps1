@@ -97,8 +97,7 @@ InModuleScope -ModuleName $ModuleName {
 				Move-FilesIntoDateDirectories `
 					-SourceDirectoryPath $SourceDirectoryPath `
 					-DestinationDirectoryPath $DestinationDirectoryPath `
-					-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
-					-Force
+					-DestinationDirectoriesDateScope $destinationDirectoriesDateScope
 
 				# Assert.
 				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
@@ -124,8 +123,7 @@ InModuleScope -ModuleName $ModuleName {
 					-SourceDirectoryPath $SourceDirectoryPath `
 					-DestinationDirectoryPath $DestinationDirectoryPath `
 					-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
-					-SourceDirectoryDepthToSearch $maxDirectoryDepth `
-					-Force
+					-SourceDirectoryDepthToSearch $maxDirectoryDepth
 
 				# Assert.
 				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
@@ -164,8 +162,7 @@ InModuleScope -ModuleName $ModuleName {
 					-SourceDirectoryPath $SourceDirectoryPath `
 					-DestinationDirectoryPath $DestinationDirectoryPath `
 					-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
-					-FileDateStrategy $fileDateStrategy `
-					-Force
+					-FileDateStrategy $fileDateStrategy
 
 				# Assert.
 				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
@@ -204,8 +201,7 @@ InModuleScope -ModuleName $ModuleName {
 					-SourceDirectoryPath $SourceDirectoryPath `
 					-DestinationDirectoryPath $DestinationDirectoryPath `
 					-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
-					-FileDateStrategy $fileDateStrategy `
-					-Force
+					-FileDateStrategy $fileDateStrategy
 
 				# Assert.
 				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
@@ -246,8 +242,7 @@ InModuleScope -ModuleName $ModuleName {
 					-DestinationDirectoryPath $DestinationDirectoryPath `
 					-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
 					-FileDateStrategy $fileDateStrategy `
-					-FileDatePropertiesToCheck $fileDatePropertiesToCheck `
-					-Force
+					-FileDatePropertiesToCheck $fileDatePropertiesToCheck
 
 				# Assert.
 				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath

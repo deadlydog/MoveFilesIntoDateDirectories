@@ -181,6 +181,46 @@ InModuleScope -ModuleName $ModuleName {
 			}
 		}
 
+		Context 'When specifying to use the oldest date' {
+			It 'Should move files into date directories with the oldest date' {
+				# Arrange.
+				[string] $fileDateStrategy = 'Oldest'
+				[string] $destinationDirectoriesDateScope = 'Month'
+
+				[hashtable[]] $testFiles = @(
+					@{
+						SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath '2020-RootDirectory.txt'
+						CreationTime = '2020-12-31 23:00:00'
+						LastWriteTime = '2020-01-01 01:00:00'
+					}
+					@{
+						SourceFilePath = Join-Path -Path $SourceDirectoryPath -ChildPath 'ChildDirectory\2021-OneDirectoryDeep.csv'
+						CreationTime = '2021-01-01 01:00:00'
+						LastWriteTime = '2021-12-31 23:00:00'
+					}
+				)
+				CreateTestFiles -testFilesToCreate $testFiles
+
+				[string[]] $expectedFilePaths = @(
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2020-01\2020-RootDirectory.txt'
+					Join-Path -Path $DestinationDirectoryPath -ChildPath '2021-01\2021-OneDirectoryDeep.csv'
+				)
+
+				# Act.
+				Move-FilesIntoDateDirectories `
+					-SourceDirectoryPath $SourceDirectoryPath `
+					-DestinationDirectoryPath $DestinationDirectoryPath `
+					-DestinationDirectoriesDateScope $destinationDirectoriesDateScope `
+					-FileDateStrategy $fileDateStrategy `
+					-Force
+
+				# Assert.
+				[string[]] $actualFilePaths = GetFilePathsInDirectory -directoryPath $DestinationDirectoryPath
+
+				$actualFilePaths | Should -Be $expectedFilePaths
+			}
+		}
+
 		Context 'When specifying to use the newest date' {
 			It 'Should move files into date directories with the newest date' {
 				# Arrange.

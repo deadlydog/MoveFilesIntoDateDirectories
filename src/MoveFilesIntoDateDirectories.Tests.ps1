@@ -1,7 +1,9 @@
-using module '.\MoveFilesIntoDateDirectories.psm1'
+[string] $ModuleName = 'MoveFilesIntoDateDirectories'
+[string] $SutModulePath = Join-Path -Path $PSScriptRoot -ChildPath "$ModuleName.psm1"
+Import-Module -Name $SutModulePath -Force
 
 # Use InModuleScope so we can call internal module functions. e.g. GetFormattedDate.
-InModuleScope -ModuleName MoveFilesIntoDateDirectories {
+InModuleScope -ModuleName $ModuleName {
 	Describe 'Move Files' {
 		BeforeEach {
 			[string] $SourceDirectoryPath = Join-Path -Path $TestDrive -ChildPath 'SourceFiles'

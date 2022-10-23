@@ -47,7 +47,7 @@ function Move-FilesIntoDateDirectories
 		$filesToMove | Where-Object { $null -ne $_ } | ForEach-Object {
 			[System.IO.FileInfo] $file = $_
 
-			[DateTime] $fileDate = Get-FileDate -file $file -fileDatePropertiesToCheck $FileDatePropertiesToCheck -fileDateStrategy $FileDateStrategy
+			[DateTime] $fileDate = GetFileDate -file $file -fileDatePropertiesToCheck $FileDatePropertiesToCheck -fileDateStrategy $FileDateStrategy
 			[string] $dateDirectoryName = GetFormattedDate -date $fileDate -dateScope $TargetDirectoriesDateScope
 			[string] $dateDirectoryPath = Join-Path -Path $TargetDirectoryPath -ChildPath $dateDirectoryName
 
@@ -84,7 +84,7 @@ function EnsureDirectoryExists([string] $directoryPath)
 	}
 }
 
-function Get-FileDate([System.IO.FileInfo] $file, [string[]] $fileDatePropertiesToCheck, [string] $fileDateStrategy)
+function GetFileDate([System.IO.FileInfo] $file, [string[]] $fileDatePropertiesToCheck, [string] $fileDateStrategy)
 {
 	# Need to use special COM shell objects to search extended file properties.
 	$directoryPath = $file.DirectoryName
@@ -104,7 +104,7 @@ function Get-FileDate([System.IO.FileInfo] $file, [string[]] $fileDateProperties
 			# Search through the extended optional file properties for the one specified.
 			Default
 			{
-				$fileDatePropertyValue = Get-FileDatePropertyValue `
+				$fileDatePropertyValue = GetFileDatePropertyValue `
 					-fileDatePropertyName $fileDatePropertyName `
 					-directoryObject $directoryObject `
 					-fileObject $fileObject
@@ -170,9 +170,9 @@ function Get-FileDate([System.IO.FileInfo] $file, [string[]] $fileDateProperties
 	return $fileDateToUse
 }
 
-function Get-FileDatePropertyValue([string] $fileDatePropertyName, [__COMObject] $directoryObject, [__COMObject] $fileObject)
+function GetFileDatePropertyValue([string] $fileDatePropertyName, [__COMObject] $directoryObject, [__COMObject] $fileObject)
 {
-	[int] $datePropertyIndex = Get-FilePropertyIndex -filePropertyName $fileDatePropertyName -directoryObject $directoryObject
+	[int] $datePropertyIndex = GetFilePropertyIndex -filePropertyName $fileDatePropertyName -directoryObject $directoryObject
 
 	if ($datePropertyIndex -lt 0)
 	{
@@ -180,7 +180,7 @@ function Get-FileDatePropertyValue([string] $fileDatePropertyName, [__COMObject]
 	}
 
 	[string] $dateString = $directoryObject.GetDetailsOf($fileObject, $datePropertyIndex)
-	[string] $sanitizedDateString = Get-SanitizedDateString -dateString $dateString
+	[string] $sanitizedDateString = GetSanitizedDateString -dateString $dateString
 
 	[DateTime] $fileDatePropertyDate = [DateTime]::MaxValue
 	if ([DateTime]::TryParse($sanitizedDateString, [ref]$fileDatePropertyDate))
@@ -190,7 +190,7 @@ function Get-FileDatePropertyValue([string] $fileDatePropertyName, [__COMObject]
 	return $null
 }
 
-function Get-FilePropertyIndex([string] $filePropertyName, [__COMObject] $directoryObject)
+function GetFilePropertyIndex([string] $filePropertyName, [__COMObject] $directoryObject)
 {
 	$propertyIndex = 0
 	do
@@ -208,7 +208,7 @@ function Get-FilePropertyIndex([string] $filePropertyName, [__COMObject] $direct
 	return $propertyIndex
 }
 
-function Get-SanitizedDateString([string] $dateString)
+function GetSanitizedDateString([string] $dateString)
 {
 	# Property values sometimes have unicode characters in them, so strip out all characters
 	# except for letters, numbers, spaces, colons, slashes, and backslashes.

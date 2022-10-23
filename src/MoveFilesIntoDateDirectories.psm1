@@ -60,7 +60,6 @@ function Move-FilesIntoDateDirectories
 	}
 }
 
-# This function is duplicated in the Pester tests, so if updated here also update it there.
 function GetFormattedDate([DateTime] $date, [string] $dateScope)
 {
 	[string] $formattedDate = [string]::Empty

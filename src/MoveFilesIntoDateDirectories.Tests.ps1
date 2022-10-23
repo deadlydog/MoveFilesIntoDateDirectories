@@ -1,7 +1,4 @@
-BeforeAll {
-	[string] $sutModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'MoveFilesIntoDateDirectories.psm1'
-	Import-Module -Name $sutModulePath -Force
-}
+using module '.\MoveFilesIntoDateDirectories.psm1'
 
 # Use InModuleScope so we can call internal module functions. e.g. GetFormattedDate.
 InModuleScope -ModuleName MoveFilesIntoDateDirectories {

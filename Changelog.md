@@ -6,9 +6,9 @@ Features:
 
 - Allow specifying the file properties that should be used to determine the date to use for the destination directory name.
   Default is 'Date taken', 'Media created', 'LastWriteTime', and 'CreationTime'.
-- Allow specifying which date strategy should be used for the destination directory name; oldest (default), newest, or specific.
+- Allow specifying which date strategy should be used for the destination directory name; oldest (default), newest, or priority (order the properties are specified in).
 - Converted script into a module.
-- Write warning if the source directory does not exist.
+- Write warning if the source directory to move the files from does not exist.
 
 Fixes:
 

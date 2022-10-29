@@ -2,9 +2,10 @@
 
 ## vNext
 
-To do before creating the next release:
+To do before creating the next release (v2):
 
 - Ensure script is cross-platform compatible.
+- Update ReadMe with instructions on the new parameters added to the module and the renamed parameters.
 - Add module to the PowerShell Gallery.
 - Update ReadMe with instructions on how to use the module from the PowerShell Gallery.
 - Update screenshots and perhaps create a video demo.

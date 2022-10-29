@@ -8,6 +8,8 @@ A common use-case of this module is to move photos into date-named directories b
 
 You can use the [Invoke-MoveFilesIntoDateDirectories.ps1](src/Invoke-MoveFilesIntoDateDirectories.ps1) script to easily provide parameters and run the cmdlet.
 
+You can grab the latest stable version from [the Release page here](https://github.com/deadlydog/MoveFilesIntoDateDirectories/releases).
+
 ## Example
 
 Some various files that were last updated on different dates:

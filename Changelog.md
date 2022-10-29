@@ -2,6 +2,13 @@
 
 ## vNext
 
+To do before creating the next release:
+
+- Ensure script is cross-platform compatible.
+- Add module to the PowerShell Gallery.
+- Update ReadMe with instructions on how to use the module from the PowerShell Gallery.
+- Update screenshots and perhaps create a video demo.
+
 Features:
 
 - Allow specifying the file properties that should be used to determine the date to use for the destination directory name.

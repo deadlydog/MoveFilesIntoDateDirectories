@@ -6,8 +6,10 @@ Import-Module -Name $moduleFilePath -Force
 [hashtable] $parameters = @{
 	SourceDirectoryPath = 'C:\SourceDirectory\WithFilesToMove'
 	#SourceDirectoryDepthToSearch = 2	# Default is to search all subdirectories.
-	TargetDirectoryPath = 'C:\TargetDirectory\ToMoveFilesInto'
-	TargetDirectoriesDateScope = 'Day'	# Hour, Day, Month, or Year.
+	DestinationDirectoryPath = 'C:\DestinationDirectory\ToMoveFilesInto'
+	DestinationDirectoriesDateScope = 'Day'	# Hour, Day, Month, or Year.
+	FileDatePropertiesToCheck = @('Date taken', 'Media created', 'CreationTime', 'LastWriteTime')
+	FileDateStrategy = 'Oldest'	# Oldest, Newest, or Priority
 	Force = $false
 }
 

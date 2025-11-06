@@ -10,6 +10,8 @@ You can use the [Invoke-MoveFilesIntoDateDirectories.ps1](src/Invoke-MoveFilesIn
 
 You can grab the latest stable version from [the Release page here](https://github.com/deadlydog/MoveFilesIntoDateDirectories/releases).
 
+If you enjoy this project, consider giving it a GitHub star ⭐ to show your support.
+
 ## Example
 
 Some various files that were last updated on different dates:
